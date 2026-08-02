@@ -177,12 +177,14 @@ Archivos de test:
 
 ## Deploy en Vercel
 
-Pendiente — se hace al final del desarrollo. El `vercel.json` con los
-rewrites ya está en el repo, así que el flujo es: subir el repo a GitHub,
-importarlo en [Vercel](https://vercel.com/new), configurar la variable de
-entorno `GEMINI_API_KEY` (y opcionalmente `GEMINI_MODEL`) en **Settings →
-Environment Variables**, y desplegar. Vercel detecta `api/chat.js` como
-Serverless Function automáticamente.
+La aplicación está desplegada en:
+**https://proyecto-m3-webster-fievre.vercel.app/**
+
+El `vercel.json` con los rewrites ya está en el repo, así que el flujo fue:
+subir el repo a GitHub, importarlo en [Vercel](https://vercel.com/new),
+configurar las variables de entorno `GEMINI_API_KEY` y `GEMINI_MODEL` en
+**Settings → Environment Variables**, y desplegar. Vercel detecta
+`api/chat.js` como Serverless Function automáticamente.
 
 ## Notas de seguridad
 
