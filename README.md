@@ -201,10 +201,6 @@ copiloto de desarrollo. Resumen del proceso:
 
 - Se le pidió a la IA que generara la estructura base de la SPA (Parte 0 y
   Parte 1 de la guía) con routing simple antes de integrar un proveedor de IA.
-- Luego se amplió el alcance para cumplir la consigna completa: routing con
-  History API (en vez de hash), integración con IA vía Vercel Functions,
-  diseño mobile-first con breakpoints, y las tres funcionalidades extra
-  (localStorage, galería de personajes, extras de UX).
 - El proveedor de IA se probó primero con Gemini, se migró temporalmente a
   OpenAI (por disponibilidad de API key), y finalmente se volvió a Gemini
   para alinearse con lo enseñado en `M3L7` del curso. Se tomó como referencia
