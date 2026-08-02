@@ -1,0 +1,19 @@
+{
+  "name": "pim3-chatea-con-tu-personaje",
+  "version": "1.0.0",
+  "description": "SPA para chatear con personajes ficticios usando Google Gemini AI, con routing por History API y Vercel Serverless Functions.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "local": "npx --yes vercel dev",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "jsdom": "^25.0.1",
+    "vitest": "^2.1.5"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1"
+  }
+}
