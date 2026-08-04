@@ -31,6 +31,16 @@ Cada uno tiene su propio system prompt en `src/characters.js`.
 - **Extras de UX**: timestamps en cada mensaje, botón para copiar respuestas
   de la IA al portapapeles, y toggle de modo oscuro/claro.
 
+## Capturas de pantalla
+
+| Home (desktop) | Chat (desktop) | About (desktop) |
+|---|---|---|
+| ![Home desktop](src/asset/image1.png) | ![Chat desktop](src/asset/image2.png) | ![About desktop](src/asset/image3.png) |
+
+| Home (tablet) | Home (mobile, menú cerrado) | Home (mobile, menú abierto) |
+|---|---|---|
+| ![Home tablet](src/asset/image4.png) | ![Home mobile](src/asset/image5.png) | ![Burger menu abierto](src/asset/image6.png) |
+
 ## Arquitectura del chat: payload generico + adaptador
 
 El frontend nunca arma un request especifico de Gemini. En cambio, arma un
