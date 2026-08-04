@@ -11,17 +11,22 @@ const routes = {
   "/about": renderAbout,
 };
 
+export function normalizePath(path) {
+  return path.length > 1 ? path.replace(/\/$/, "") : path;
+}
+
 export function resolveView(pathname) {
-  return routes[pathname] || renderNotFound;
+  return routes[normalizePath(pathname)] || renderNotFound;
 }
 
 function render(pathname) {
   const app = document.getElementById("app");
-  const view = resolveView(pathname);
+  const path = normalizePath(pathname);
+  const view = resolveView(path);
 
   app.innerHTML = "";
   view(app);
-  updateActiveLink(pathname === "/" ? "/home" : pathname);
+  updateActiveLink(path === "/" ? "/home" : path);
   window.scrollTo(0, 0);
 }
 
