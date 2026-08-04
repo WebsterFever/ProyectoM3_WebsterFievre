@@ -12,20 +12,40 @@ export function renderNavigation() {
 
   nav.innerHTML = `
     <a class="brand" href="/home" data-link data-path="/home">✨ PIM3 Chat</a>
-    <div class="nav-links">
+    <div class="nav-right">
+      <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema" type="button">${themeIcon}</button>
+      <button id="nav-toggle" class="nav-toggle" aria-label="Abrir menu" aria-expanded="false" type="button">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-links" id="nav-links">
       ${links
         .map(
           (link) =>
             `<a href="${link.path}" data-link data-path="${link.path}">${link.label}</a>`
         )
         .join("")}
-      <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema" type="button">${themeIcon}</button>
     </div>
   `;
 
   nav.querySelector("#theme-toggle").addEventListener("click", () => {
     const next = toggleTheme();
     nav.querySelector("#theme-toggle").textContent = next === "dark" ? "☀️" : "🌙";
+  });
+
+  const navToggle = nav.querySelector("#nav-toggle");
+  const navLinks = nav.querySelector("#nav-links");
+
+  navToggle.addEventListener("click", () => {
+    const isOpen = navLinks.classList.toggle("open");
+    navToggle.setAttribute("aria-expanded", String(isOpen));
+  });
+
+  navLinks.querySelectorAll("a").forEach((a) => {
+    a.addEventListener("click", () => {
+      navLinks.classList.remove("open");
+      navToggle.setAttribute("aria-expanded", "false");
+    });
   });
 }
 
