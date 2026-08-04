@@ -150,7 +150,7 @@ localStorage, y el chat real con cada personaje.
 
 ## Tests
 
-El proyecto incluye 56 tests unitarios con [Vitest](https://vitest.dev/)
+El proyecto incluye 60 tests unitarios con [Vitest](https://vitest.dev/)
 sobre las funciones puras del pipeline de chat: construcción y validación del
 payload, adaptación al formato de Gemini, normalización de la respuesta,
 recorte de historial, manejo de personajes, routing, persistencia en
