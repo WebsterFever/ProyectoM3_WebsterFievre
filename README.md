@@ -1,232 +1,230 @@
-# Chatea con tu personaje favorito — Proyecto Integrador 3
+# Chat with Your Favorite Character — Integrative Project 3
 
-Single Page Application que permite conversar con personajes ficticios usando
-Google Gemini AI. El backend usa una Vercel Serverless Function como proxy,
-por lo que la API key nunca se expone en el navegador.
+A Single Page Application that lets users chat with fictional characters using
+Google Gemini AI. The backend uses a Vercel Serverless Function as a proxy,
+so the API key is never exposed in the browser.
 
-## Personajes disponibles
+## Available Characters
 
-| Personaje | Personalidad |
+| Character | Personality |
 |---|---|
-| 🧙‍♂️ Yoda (Star Wars) | Sabio, enigmático, habla invirtiendo el orden de las palabras |
-| 🦾 Tony Stark (Iron Man) | Sarcástico, ingenioso, seguro de sí mismo |
-| 📚 Hermione Granger (Harry Potter) | Inteligente, estudiosa, cita libros y hechizos |
+| 🧙‍♂️ Yoda (Star Wars) | Wise, enigmatic, speaks by inverting the usual word order |
+| 🦾 Tony Stark (Iron Man) | Sarcastic, witty, and confident |
+| 📚 Hermione Granger (Harry Potter) | Intelligent, studious, and often cites books and spells |
 
-Cada uno tiene su propio system prompt en `src/characters.js`.
+Each character has its own system prompt in `src/characters.js`.
 
-## Funcionalidades
+## Features
 
-- **Routing SPA con History API**: navegación entre `/home`, `/chat` y `/about`
-  sin recargar la página, con soporte completo de los botones back/forward
+- **SPA routing with the History API**: navigation between `/home`, `/chat`, and `/about`
+  without reloading the page, with full browser back/forward support
   (`popstate`).
-- **Chat con IA**: mensajes diferenciados visualmente, indicador de
-  "escribiendo...", envío con botón o `Enter`, manejo de errores de red.
-- **Diseño responsive mobile-first** con breakpoints en `600px` (tablet) y
+- **AI chat**: visually differentiated messages, a typing indicator,
+  sending with a button or `Enter`, and network error handling.
+- **Mobile-first responsive design** with breakpoints at `600px` (tablet) and
   `1024px` (desktop).
-- **Persistencia con localStorage**: el historial se guarda por personaje,
-  se recupera al recargar, y se puede borrar con el botón "Borrar historial".
-  La galería de Home muestra qué personajes tienen historial guardado.
-- **Galería de personajes**: elegí con quién chatear desde tarjetas visuales
-  en Home.
-- **Extras de UX**: timestamps en cada mensaje, botón para copiar respuestas
-  de la IA al portapapeles, y toggle de modo oscuro/claro.
+- **Persistence with localStorage**: history is stored per character,
+  restored after reload, and can be cleared with the "Clear history" button.
+  The Home gallery shows which characters have saved history.
+- **Character gallery**: choose who to chat with from visual cards
+  on the Home page.
+- **UX extras**: timestamps on every message, a button to copy AI responses
+  to the clipboard, and a dark/light mode toggle.
 
-## Capturas de pantalla
+## Screenshots
 
 | Home (desktop) | Chat (desktop) | About (desktop) |
 |---|---|---|
 | ![Home desktop](src/asset/image1.png) | ![Chat desktop](src/asset/image2.png) | ![About desktop](src/asset/image3.png) |
 
-| Home (tablet) | Home (mobile, menú cerrado) | Home (mobile, menú abierto) |
+| Home (tablet) | Home (mobile, menu closed) | Home (mobile, menu open) |
 |---|---|---|
-| ![Home tablet](src/asset/image4.png) | ![Home mobile](src/asset/image5.png) | ![Burger menu abierto](src/asset/image6.png) |
+| ![Home tablet](src/asset/image4.png) | ![Home mobile](src/asset/image5.png) | ![Burger menu open](src/asset/image6.png) |
 
-## Arquitectura del chat: payload generico + adaptador
+## Chat Architecture: Generic Payload + Adapter
 
-El frontend nunca arma un request especifico de Gemini. En cambio, arma un
-**payload generico** (`model`, `system`, `messages`, `max_tokens`,
-`temperature`) y se lo manda tal cual a `/api/chat`. El backend es el unico
-que sabe que el proveedor es Gemini y traduce ese contrato a su formato. Si
-el dia de mañana se cambia de proveedor de IA, solo hay que tocar
-`api/chat.js` y `api/utils/gemini.js` — el resto de la app no se entera.
+The frontend never builds a Gemini-specific request. Instead, it creates a
+**generic payload** (`model`, `system`, `messages`, `max_tokens`,
+`temperature`) and sends it directly to `/api/chat`. The backend is the only
+part that knows the provider is Gemini and translates that contract into Gemini's format. If
+the AI provider changes in the future, only `api/chat.js` and
+`api/utils/gemini.js` need to change — the rest of the app remains untouched.
 
 ```
 Frontend (src/engine/)                    Backend (api/)
 ─────────────────────                     ──────────────
-payload.js   → arma { model, system,      chat.js       → orquesta todo
-                messages, max_tokens,     utils/request.js  → lee y valida
-                temperature }                                el payload
-history.js   → recorta el historial       utils/gemini.js   → adapta el
-                antes de mandarlo                             payload a Gemini
-aiClient.js  → POST a /api/chat           utils/response.js → devuelve
-normalizer.js → parsea la respuesta                          siempre el mismo
+payload.js   → builds { model, system,      chat.js       → orquesta todo
+                messages, max_tokens,     utils/request.js  → reads and validates
+                temperature }                                the payload
+history.js   → trims history       utils/gemini.js   → adapts the
+                before sending it                             payload to Gemini
+aiClient.js  → POST to /api/chat           utils/response.js → returns
+normalizer.js → parses the response                          the same
                 a { text, truncated }                        shape (content[])
-                                          utils/errors.js    → detecta rate
+                                          utils/errors.js    → detects rate
                                                                 limit (429)
 ```
 
-## Estructura del proyecto
+## Project Structure
 
 ```
 PoyectoEntregrador3/
 ├── api/
-│   ├── chat.js                  # Serverless function: orquesta el pipeline
+│   ├── chat.js                  # Serverless function: orchestrates the pipeline
 │   └── utils/
 │       ├── request.js            # parseJsonBody, getMessages, getGenerationSettings
-│       ├── gemini.js              # Adapta el payload generico al formato de Gemini
-│       ├── response.js             # Shape de respuesta uniforme (content[])
+│       ├── gemini.js              # Adapta the payload generico al formato de Gemini
+│       ├── response.js             # Uniform response shape (content[])
 │       └── errors.js                # getHttpStatus, isRateLimitError
 ├── src/
-│   ├── main.js             # Punto de entrada
-│   ├── router.js            # Routing SPA con History API
-│   ├── navigation.js        # Render de la navegación + toggle de tema
-│   ├── state.js              # Personaje seleccionado (estado en memoria)
-│   ├── characters.js         # Definición de personajes, system prompts y temperature
-│   ├── storage.js             # Helpers de localStorage (historial, tema)
-│   ├── theme.js                # Modo oscuro/claro
-│   ├── utils.js                  # Funciones puras (escape HTML, mensajes, etc.)
+│   ├── main.js             # Entry point
+│   ├── router.js            # SPA routing with the History API
+│   ├── navigation.js        # Navigation rendering + theme toggle
+│   ├── state.js              # Selected character (in-memory state)
+│   ├── characters.js         # Character definitions, system prompts, and temperature
+│   ├── storage.js             # localStorage helpers (history, theme)
+│   ├── theme.js                # Dark/light mode
+│   ├── utils.js                  # Pure functions (HTML escaping, messages, etc.)
 │   ├── engine/
 │   │   ├── payload.js               # buildPayload, isValidPayload, createSystemPrompt
-│   │   ├── history.js                # getTrimmedHistory (recorte de contexto)
+│   │   ├── history.js                # getTrimmedHistory (context trimming)
 │   │   ├── aiClient.js                 # callAI(payload) -> fetch a /api/chat
 │   │   └── normalizer.js                # normalizeAIResponse, extractUsage
 │   └── views/
-│       ├── home.js         # Galería de personajes + bienvenida
-│       ├── chat.js          # Interfaz de chat
-│       ├── about.js          # Info del proyecto
-│       └── notFound.js        # Vista 404
-├── tests/                # Tests unitarios (Vitest)
+│       ├── home.js         # Character gallery + welcome section
+│       ├── chat.js          # Chat interface
+│       ├── about.js          # Project information
+│       └── notFound.js        # 404 view
+├── tests/                # Unit tests (Vitest)
 ├── index.html
 ├── styles.css
-├── vercel.json           # Rewrites de SPA (mismo patron que M3L7)
+├── vercel.json           # SPA rewrites (same pattern as M3L7)
 ├── vitest.config.js
 ├── package.json
 ├── .env.example
-└── .env                  # No se sube al repo (ver .gitignore)
+└── .env                  # Not committed to the repo (see .gitignore)
 ```
 
-## Requisitos previos
+## Prerequisites
 
 - Node.js 18 o superior
-- Una API key de [Google AI Studio](https://aistudio.google.com/) para Gemini
-  (tiene tier gratuito, no hace falta tarjeta para empezar)
+- A [Google AI Studio](https://aistudio.google.com/) API key for Gemini
+  (a free tier is available and no credit card is required to get started)
 
-## Instalación
+## Installation
 
 ```bash
 npm install
 ```
 
-Copiá `.env.example` a `.env` (o completá el `.env` ya presente) y agregá tu
+Copy `.env.example` to `.env` (or fill in the existing `.env`) and add your
 API key:
 
 ```
-GEMINI_API_KEY=tu_api_key_de_google_ai_studio
+GEMINI_API_KEY=your_google_ai_studio_api_key
 GEMINI_MODEL=gemini-2.5-flash
 ```
 
-## Correr en local
+## Run Locally
 
-No abras `index.html` con doble clic: el routing con History API necesita
-que la app se sirva por HTTP (no por `file://`).
+Do not open `index.html` by double-clicking it: History API routing requires
+the app to be served over HTTP (not `file://`).
 
 ```bash
 npm run local
 ```
 
-Esto corre `vercel dev` (via `npx`, sin necesidad de instalar la CLI
-globalmente ni loguearte para desarrollo local). Levanta el sitio estático y
-la serverless function `api/chat.js` juntos, respetando los rewrites de
-`vercel.json` para que `/chat` y `/about` funcionen al recargar la página
-directamente en esas rutas — el mismo flujo que usa la resolución de M3L7.
+This runs `vercel dev` (through `npx`, without requiring a global CLI install
+or login for local development). It serves the static site and the
+`api/chat.js` serverless function together, respecting the rewrites in
+`vercel.json` so `/chat` and `/about` still work when the page is reloaded
+directly on those routes — the same flow used in the M3L7 reference solution.
 
-> El script se llama `local` y no `dev` a propósito: si se llama `dev`,
-> Vercel CLI lo detecta como el "Development Command" del proyecto y
-> `vercel dev` termina invocándose a sí mismo en un loop infinito.
+> The script is intentionally named `local` instead of `dev`: if it is named `dev`,
+> Vercel CLI detects it as the project's "Development Command" and
+> `vercel dev` ends up calling itself in an infinite loop.
 
-Abrí `http://localhost:3000` y probá: navegación entre vistas, botones
-back/forward, galería de personajes, modo oscuro/claro, persistencia en
-localStorage, y el chat real con cada personaje.
+Open `http://localhost:3000` and test navigation between views, browser
+back/forward buttons, the character gallery, dark/light mode, localStorage
+persistence, and real chat with each character.
 
 ## Tests
 
-El proyecto incluye 60 tests unitarios con [Vitest](https://vitest.dev/)
-sobre las funciones puras del pipeline de chat: construcción y validación del
-payload, adaptación al formato de Gemini, normalización de la respuesta,
-recorte de historial, manejo de personajes, routing, persistencia en
-localStorage, y el cliente de red con `fetch` mockeado (sin tocar la red).
+The project includes 60 unit tests with [Vitest](https://vitest.dev/)
+covering the pure functions in the chat pipeline: payload construction and validation,
+adaptation to Gemini's format, response normalization, history trimming,
+character handling, routing, localStorage persistence, and the network client
+with mocked `fetch` calls (without using the real network).
 
 ```bash
 npm test
 ```
 
-Archivos de test:
+Test files:
 
-- `tests/payload.test.js` — `buildPayload` arma el contrato correcto;
-  `isValidPayload` detecta payloads mal formados (incluye el caso de un
-  `role: "system"` colado dentro de `messages[]`).
-- `tests/history.test.js` — `getTrimmedHistory` recorta al límite de turnos.
-- `tests/normalizer.test.js` — `normalizeAIResponse` extrae texto de forma
-  segura y nunca rompe con shapes inesperados; `extractUsage` lee tokens.
-- `tests/aiClient.test.js` — `callAI` con `fetch` **mockeado** (`vi.stubGlobal`),
-  sin red real: verifica el POST, éxito, errores HTTP, rate limit (429) y
-  respuestas no-JSON.
-- `tests/api-gemini.test.js` — el adaptador mapea `assistant` → `model` y
-  filtra roles inválidos antes de mandarlos a Gemini.
-- `tests/api-request.test.js` — parseo del body, validación de `messages[]`,
-  defaults de `getGenerationSettings`.
-- `tests/api-response.test.js` — el shape de respuesta (`content[]`,
-  `stop_reason`, `usage`) es consistente sin importar el proveedor.
-- `tests/api-errors.test.js` — detección de rate limit (429) y status HTTP.
-- `tests/utils.test.js` — escape de HTML, creación de mensajes, timestamps,
-  conversión de mensajes internos al formato `{role, content}`.
-- `tests/characters.test.js` — búsqueda de personajes por id, y que cada uno
-  tenga `systemPrompt` y `temperature` válidos.
-- `tests/router.test.js` — resolución de rutas a sus vistas correspondientes.
-- `tests/storage.test.js` — guardar, leer y borrar historial en localStorage.
+- `tests/payload.test.js` — `buildPayload` builds the correct contract;
+  `isValidPayload` detects malformed payloads (including the case of a
+  `role: "system"` inserted inside `messages[]`).
+- `tests/history.test.js` — `getTrimmedHistory` trims history to the turn limit.
+- `tests/normalizer.test.js` — `normalizeAIResponse` safely extracts text
+  and never breaks on unexpected shapes; `extractUsage` reads token usage.
+- `tests/aiClient.test.js` — `callAI` with **mocked** `fetch` (`vi.stubGlobal`),
+  without real network access: verifies the POST request, success cases, HTTP errors, rate limiting (429), and
+  non-JSON responses.
+- `tests/api-gemini.test.js` — the adapter maps `assistant` → `model` y
+  filtra roles inválidos before sending its a Gemini.
+- `tests/api-request.test.js` — body parsing, `messages[]` validation,
+  and `getGenerationSettings` defaults.
+- `tests/api-response.test.js` — the response shape (`content[]`,
+  `stop_reason`, `usage`) is consistent regardless of the provider.
+- `tests/api-errors.test.js` — rate-limit (429) and HTTP status detection.
+- `tests/utils.test.js` — HTML escaping, message creation, timestamps,
+  and conversion of internal messages to the `{role, content}`.
+- `tests/characters.test.js` — character lookup by id and validation that each one has `systemPrompt` y `temperature` valid values.
+- `tests/router.test.js` — route resolution to the corresponding views.
+- `tests/storage.test.js` — saving, reading, and clearing history in localStorage.
 
-## Deploy en Vercel
+## Deploy on Vercel
 
-La aplicación está desplegada en:
+The application is deployed at:
 **https://proyecto-m3-webster-fievre.vercel.app/**
 
-El `vercel.json` con los rewrites ya está en el repo, así que el flujo fue:
-subir el repo a GitHub, importarlo en [Vercel](https://vercel.com/new),
-configurar las variables de entorno `GEMINI_API_KEY` y `GEMINI_MODEL` en
-**Settings → Environment Variables**, y desplegar. Vercel detecta
-`api/chat.js` como Serverless Function automáticamente.
+The `vercel.json` file with the rewrites is already in the repository, so the deployment flow was:
+push the repository to GitHub, import it into [Vercel](https://vercel.com/new),
+configure the `GEMINI_API_KEY` and `GEMINI_MODEL` environment variables under
+**Settings → Environment Variables**, and deploy. Vercel automatically detects
+`api/chat.js` as a Serverless Function.
 
-## Notas de seguridad
+## Security Notes
 
-- La API key de Gemini solo se usa dentro de `api/chat.js`, que corre en el
-  servidor de Vercel. El cliente nunca la ve.
-- El texto de usuario se escapa (`escapeHTML`) antes de insertarse en el DOM
-  para evitar inyección de HTML.
-- Si una API key llega a exponerse por error (por ejemplo, se pega en un
-  chat, un commit o un log), hay que rotarla/revocarla en el dashboard del
-  proveedor y generar una nueva.
+- The Gemini API key is used only inside `api/chat.js`, which runs on the
+  Vercel server. The client never sees it.
+- User text is escaped (`escapeHTML`) before being inserted into the DOM
+  to prevent HTML injection.
+- If an API key is accidentally exposed (for example, pasted into a chat,
+  commit, or log), it should be rotated/revoked in the provider's dashboard
+  and replaced with a new one.
 
-## Sobre el uso de IA en el desarrollo
+## About the Use of AI During Development
 
-Este proyecto fue construido con la asistencia de Claude (Anthropic) como
-copiloto de desarrollo. Resumen del proceso:
+This project was built with assistance from Claude (Anthropic) as a
+development copilot. Summary of the process:
 
-- Se le pidió a la IA que generara la estructura base de la SPA (Parte 0 y
-  Parte 1 de la guía) con routing simple antes de integrar un proveedor de IA.
-- El proveedor de IA se probó primero con Gemini, se migró temporalmente a
-  OpenAI (por disponibilidad de API key), y finalmente se volvió a Gemini
-  para alinearse con lo enseñado en `M3L7` del curso. Se tomó como referencia
-  la arquitectura de `M3L7/resolution` (payload genérico en el frontend +
-  adaptador específico del proveedor en el backend), replicada en
-  `src/engine/` y `api/utils/` — gracias a esa separación, cada cambio de
-  proveedor terminó tocando solo `api/chat.js` y el archivo adaptador
-  (`api/utils/gemini.js`), sin modificar el resto de la app.
-- Decisiones tomadas a partir de las sugerencias de la IA: se eligieron los
-  personajes Yoda, Tony Stark y Hermione Granger por tener voces muy
-  distintivas y fáciles de reconocer en un system prompt corto; se separaron
-  las funciones puras (`utils.js`, `characters.js`, `engine/`, `api/utils/`)
-  del código con efectos secundarios (DOM, localStorage, fetch, llamada a la
-  API) específicamente para poder testear con Vitest sin mockear casi nada.
-- Todo el código generado fue revisado y ejecutado localmente (`npm test`,
-  y llamadas reales a la API) antes de darlo por válido.
+- The AI was asked to generate the base SPA structure (Part 0 and
+  Part 1 of the guide) with simple routing before integrating an AI provider.
+- The AI provider was first tested with Gemini, temporarily migrated to
+  OpenAI (because of API key availability), and later changed back to Gemini
+  to align with what was taught in the course's `M3L7`. The
+  `M3L7/resolution` architecture was used as a reference (generic payload in the frontend +
+  provider-specific adapter in the backend), reproduced in
+  `src/engine/` and `api/utils/`. Thanks to that separation, each provider change
+  only required changes to `api/chat.js` and the adapter file
+  (`api/utils/gemini.js`), without modifying the rest of the app.
+- Decisions based on AI suggestions included choosing Yoda, Tony Stark, and
+  Hermione Granger because they have very distinctive voices that are easy to capture
+  in a short system prompt. Pure functions (`utils.js`, `characters.js`, `engine/`, `api/utils/`)
+  were separated from code with side effects (DOM, localStorage, fetch, API calls)
+  specifically to make Vitest testing possible with very little mocking.
+- All generated code was reviewed and run locally (`npm test`
+  and real API calls) before being considered valid.
 # ProyectoM3_WebsterFievre
