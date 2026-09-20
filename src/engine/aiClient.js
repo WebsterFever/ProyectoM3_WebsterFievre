@@ -1,8 +1,8 @@
 /*
- * aiClient.js — Cliente frontend hacia la Serverless Function
+ * aiClient.js — Frontend client for the Serverless Function
  *
- * El unico contacto con la red. La API key nunca aparece en este archivo:
- * vive solo del lado del servidor (api/chat.js).
+ * The only network contact point. The API key never appears in this file:
+ * it exists only on the server side (api/chat.js).
  */
 export async function callAI(payload) {
   const response = await fetch("/api/chat", {
@@ -15,7 +15,7 @@ export async function callAI(payload) {
   try {
     data = await response.json();
   } catch {
-    throw new Error("El servidor no devolvio una respuesta valida.");
+    throw new Error("The server did not return a valid response.");
   }
 
   if (!response.ok) {
