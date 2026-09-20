@@ -21,7 +21,7 @@ describe("callAI", () => {
     vi.unstubAllGlobals();
   });
 
-  it("hace un POST a /api/chat con el payload serializado en el body", async () => {
+  it("sends a POST request to /api/chat with the serialized payload in the body", async () => {
     mockFetchOnce({ ok: true, status: 200, body: { content: [] } });
     const payload = { model: "gemini-2.5-flash", system: "x", messages: [], max_tokens: 200, temperature: 0.7 };
 
@@ -37,37 +37,37 @@ describe("callAI", () => {
     );
   });
 
-  it("devuelve el JSON de la respuesta cuando response.ok es true", async () => {
+  it("returns the response JSON when response.ok is true", async () => {
     const raw = { content: [{ type: "text", text: "Fuerte con la Fuerza, eres." }] };
     mockFetchOnce({ ok: true, status: 200, body: raw });
 
     await expect(callAI({})).resolves.toEqual(raw);
   });
 
-  it("lanza un error con el mensaje del backend cuando response.ok es false", async () => {
-    mockFetchOnce({ ok: false, status: 429, body: { error: "Rate limit de Gemini.", retryAfterSeconds: 8 } });
+  it("throws an error with the backend message when response.ok is false", async () => {
+    mockFetchOnce({ ok: false, status: 429, body: { error: "Gemini rate limit reached.", retryAfterSeconds: 8 } });
 
-    await expect(callAI({})).rejects.toThrow("Rate limit de Gemini.");
+    await expect(callAI({})).rejects.toThrow("Gemini rate limit reached.");
   });
 
-  it("adjunta status y retryAfterSeconds al error lanzado", async () => {
+  it("attaches status and retryAfterSeconds to the thrown error", async () => {
     mockFetchOnce({ ok: false, status: 429, body: { error: "Rate limit", retryAfterSeconds: 8 } });
 
     try {
       await callAI({});
-      throw new Error("no deberia llegar aca");
+      throw new Error("should not get here");
     } catch (error) {
       expect(error.status).toBe(429);
       expect(error.retryAfterSeconds).toBe(8);
     }
   });
 
-  it("usa un mensaje generico si la respuesta de error no trae 'error'", async () => {
+  it("uses a generic message if the error response does not include 'error'", async () => {
     mockFetchOnce({ ok: false, status: 500, body: {} });
     await expect(callAI({})).rejects.toThrow("HTTP 500");
   });
 
-  it("lanza un error si el body no es JSON valido (en vez de devolver datos vacios silenciosamente)", async () => {
+  it("throws an error if the body is not valid JSON (instead of silently returning empty data)", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue({
@@ -79,6 +79,6 @@ describe("callAI", () => {
       })
     );
 
-    await expect(callAI({})).rejects.toThrow("El servidor no devolvio una respuesta valida.");
+    await expect(callAI({})).rejects.toThrow("The server did not return a valid response.");
   });
 });
