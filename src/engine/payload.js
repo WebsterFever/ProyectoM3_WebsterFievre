@@ -1,7 +1,7 @@
 /*
- * payload.js — Construccion y validacion del payload interno del chat
+ * payload.js — Building and validating the internal chat payload
  *
- * Contrato que viaja del frontend a /api/chat:
+ * Contract sent from the frontend to /api/chat:
  * {
  *   model: string,
  *   system: string,
@@ -10,8 +10,8 @@
  *   temperature: number
  * }
  *
- * El backend no conoce personajes: solo recibe este contrato generico y lo
- * adapta al proveedor de IA que corresponda (Gemini en este proyecto).
+ * The backend does not know about characters: it only receives this generic contract and
+ * adapts it to the appropriate AI provider (Gemini in this project).
  */
 
 const DEFAULT_MODEL = "gemini-2.5-flash";
