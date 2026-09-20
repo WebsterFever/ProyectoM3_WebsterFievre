@@ -1,9 +1,9 @@
 /*
- * request.js — Helpers para leer el request de /api/chat
+ * request.js — Helpers for reading the /api/chat request
  *
- * La Serverless Function recibe el payload armado por src/engine/payload.js.
- * Solo valida que llegue bien formado; no reconstruye memoria ni conoce
- * personajes.
+ * The Serverless Function receives the payload built by src/engine/payload.js.
+ * It only validates that it is well formed; it does not rebuild memory or know about
+ * characters.
  */
 export function parseJsonBody(body) {
   if (typeof body === "string") {
@@ -16,7 +16,7 @@ export function getMessages(payload) {
   const messages = Array.isArray(payload?.messages) ? payload.messages : [];
 
   if (messages.length === 0) {
-    const error = new Error("El payload debe incluir messages[]");
+    const error = new Error("The payload must include messages[]");
     error.status = 400;
     throw error;
   }
