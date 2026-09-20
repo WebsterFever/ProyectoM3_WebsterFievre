@@ -1,5 +1,5 @@
 /*
- * errors.js — Traduccion de errores tecnicos a respuestas HTTP controladas
+ * errors.js — Translation of technical errors into controlled HTTP responses
  */
 export function getHttpStatus(error) {
   return typeof error?.status === "number" ? error.status : 500;
