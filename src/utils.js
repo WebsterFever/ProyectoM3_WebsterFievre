@@ -38,7 +38,7 @@ export function buildChatMessages(messages) {
 
 export function normalizeReply(text) {
   if (typeof text !== "string" || !text.trim()) {
-    throw new Error("Respuesta vacia de la IA");
+    throw new Error("Empty AI response");
   }
   return text.trim();
 }
