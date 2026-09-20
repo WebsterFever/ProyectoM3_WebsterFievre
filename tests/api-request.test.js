@@ -2,27 +2,27 @@ import { describe, it, expect } from "vitest";
 import { parseJsonBody, getMessages, getGenerationSettings } from "../api/utils/request.js";
 
 describe("parseJsonBody", () => {
-  it("parsea un body en formato string", () => {
+  it("parses a body in string format", () => {
     expect(parseJsonBody('{"model":"gemini-2.5-flash"}')).toEqual({ model: "gemini-2.5-flash" });
   });
 
-  it("devuelve el body tal cual si ya es un objeto", () => {
+  it("returns the body unchanged if it is already an object", () => {
     expect(parseJsonBody({ model: "gemini-2.5-flash" })).toEqual({ model: "gemini-2.5-flash" });
   });
 
-  it("devuelve un objeto vacio si el body es undefined o string vacio", () => {
+  it("returns an empty object if the body is undefined or an empty string", () => {
     expect(parseJsonBody(undefined)).toEqual({});
     expect(parseJsonBody("")).toEqual({});
   });
 });
 
 describe("getMessages", () => {
-  it("devuelve messages[] si esta presente y no vacio", () => {
-    const messages = [{ role: "user", content: "Hola" }];
+  it("returns messages[] if it is present and not empty", () => {
+    const messages = [{ role: "user", content: "Hello" }];
     expect(getMessages({ messages })).toBe(messages);
   });
 
-  it("lanza un error con status 400 si no hay mensajes", () => {
+  it("throws an error with status 400 if there are no messages", () => {
     expect(() => getMessages({ messages: [] })).toThrow();
     try {
       getMessages({});
@@ -33,22 +33,22 @@ describe("getMessages", () => {
 });
 
 describe("getGenerationSettings", () => {
-  it("usa los valores del payload cuando estan presentes", () => {
+  it("uses payload values when they are present", () => {
     const settings = getGenerationSettings({
-      system: "Sos Yoda",
+      system: "You are Yoda",
       model: "gpt-4o",
       temperature: 0.6,
       max_tokens: 150,
     });
     expect(settings).toEqual({
-      system: "Sos Yoda",
+      system: "You are Yoda",
       modelName: "gpt-4o",
       temperature: 0.6,
       maxTokens: 150,
     });
   });
 
-  it("aplica defaults razonables si el payload viene incompleto", () => {
+  it("applies reasonable defaults if the payload is incomplete", () => {
     expect(getGenerationSettings({})).toEqual({
       system: "",
       modelName: "gemini-2.5-flash",
