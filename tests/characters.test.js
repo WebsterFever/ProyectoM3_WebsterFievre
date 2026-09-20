@@ -2,17 +2,17 @@ import { describe, it, expect } from "vitest";
 import { CHARACTERS, getCharacterById, DEFAULT_CHARACTER_ID } from "../src/characters.js";
 
 describe("getCharacterById", () => {
-  it("devuelve el personaje correcto para un id valido", () => {
+  it("returns the correct character for a valid id", () => {
     const character = getCharacterById("yoda");
     expect(character).toBeDefined();
     expect(character.name).toBe("Yoda");
   });
 
-  it("devuelve undefined para un id inexistente", () => {
+  it("returns undefined for a nonexistent id", () => {
     expect(getCharacterById("no-existe")).toBeUndefined();
   });
 
-  it("incluye al menos 3 personajes con systemPrompt y temperature definidos", () => {
+  it("includes at least 3 characters with defined systemPrompt and temperature values", () => {
     expect(CHARACTERS.length).toBeGreaterThanOrEqual(3);
     CHARACTERS.forEach((character) => {
       expect(character.systemPrompt).toBeTruthy();
@@ -22,7 +22,7 @@ describe("getCharacterById", () => {
     });
   });
 
-  it("DEFAULT_CHARACTER_ID corresponde a un personaje existente", () => {
+  it("DEFAULT_CHARACTER_ID corresponds to an existing character", () => {
     expect(getCharacterById(DEFAULT_CHARACTER_ID)).toBeDefined();
   });
 });
