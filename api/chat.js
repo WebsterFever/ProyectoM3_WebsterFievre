@@ -1,14 +1,14 @@
 /*
- * api/chat.js — Vercel Serverless Function para el chat
+ * api/chat.js — Vercel Serverless Function for chat
  *
- * Responsabilidad:
- * - Recibir el payload generico armado por src/engine/payload.js.
- * - Leer GEMINI_API_KEY desde process.env (nunca llega al navegador).
- * - Adaptar el payload interno a Gemini (api/utils/gemini.js).
- * - Devolver un shape compatible con src/engine/normalizer.js: content[].
+ * Responsibilities:
+ * - Receive the generic payload built by src/engine/payload.js.
+ * - Read GEMINI_API_KEY from process.env (it never reaches the browser).
+ * - Adapt the internal payload to Gemini (api/utils/gemini.js).
+ * - Return a shape compatible with src/engine/normalizer.js: content[].
  *
- * Esta funcion no conoce personajes: el system prompt y la temperature ya
- * vienen resueltos en el payload que manda el cliente.
+ * This function does not know about characters: the system prompt and temperature are already
+ * resolved in the payload sent by the client.
  */
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { getHttpStatus, isRateLimitError } from "./utils/errors.js";
@@ -21,14 +21,14 @@ const apiKey = process.env.GEMINI_API_KEY;
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Metodo no permitido." });
+    return res.status(405).json({ error: "Method not allowed." });
   }
 
   try {
     const payload = parseJsonBody(req.body);
 
     if (!apiKey) {
-      return res.status(500).json({ error: "Falta configurar GEMINI_API_KEY en el servidor." });
+      return res.status(500).json({ error: "GEMINI_API_KEY is not configured on the server." });
     }
 
     const messages = getMessages(payload);
@@ -58,13 +58,13 @@ export default async function handler(req, res) {
 
     if (isRateLimitError(error)) {
       return res.status(429).json({
-        error: "Rate limit de Gemini. Reintenta en unos segundos.",
+        error: "Gemini rate limit reached. Try again in a few seconds.",
         retryAfterSeconds: 8,
       });
     }
 
     return res.status(getHttpStatus(error)).json({
-      error: error.message || "No se pudo obtener respuesta de la IA.",
+      error: error.message || "Could not get a response from the AI.",
     });
   }
 }
