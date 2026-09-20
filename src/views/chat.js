@@ -21,14 +21,14 @@ export function renderChat(container) {
             <p>${escapeHTML(character.tagline)}</p>
           </div>
         </div>
-        <button id="clear-history-btn" class="btn-secondary" type="button">Borrar historial</button>
+        <button id="clear-history-btn" class="btn-secondary" type="button">Clear history</button>
       </header>
 
       <div id="messages" class="messages" aria-live="polite"></div>
 
       <div id="typing-indicator" class="typing-indicator hidden">
         <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-        <span class="typing-label">${escapeHTML(character.name)} esta escribiendo...</span>
+        <span class="typing-label">${escapeHTML(character.name)} is typing...</span>
       </div>
 
       <p id="error-banner" class="error-banner hidden" role="alert"></p>
@@ -37,11 +37,11 @@ export function renderChat(container) {
         <textarea
           id="chat-input"
           class="chat-input"
-          placeholder="Escribi tu mensaje..."
+          placeholder="Type your message..."
           rows="1"
           required
         ></textarea>
-        <button type="submit" id="send-btn" class="btn-primary">Enviar</button>
+        <button type="submit" id="send-btn" class="btn-primary">Send</button>
       </form>
     </section>
   `;
@@ -64,7 +64,7 @@ export function renderChat(container) {
         const message = messages[Number(btn.dataset.copyIndex)];
         navigator.clipboard?.writeText(message.text).then(() => {
           const original = btn.textContent;
-          btn.textContent = "Copiado ✓";
+          btn.textContent = "Copied ✓";
           setTimeout(() => (btn.textContent = original), 1200);
         });
       });
@@ -80,7 +80,7 @@ export function renderChat(container) {
           <p>${escapeHTML(message.text)}</p>
           <div class="message-meta">
             <span class="message-time">${formatTimestamp(message.timestamp)}</span>
-            ${!isUser ? `<button class="copy-btn" data-copy-index="${index}" type="button">Copiar</button>` : ""}
+            ${!isUser ? `<button class="copy-btn" data-copy-index="${index}" type="button">Copy</button>` : ""}
           </div>
         </div>
       </div>
@@ -123,25 +123,25 @@ export function renderChat(container) {
       const payload = buildPayload(character, trimmedHistory);
 
       if (!isValidPayload(payload)) {
-        throw new Error("Payload invalido, revisa el historial enviado.");
+        throw new Error("Invalid payload. Check the submitted history.");
       }
 
       const raw = await callAI(payload);
       const { text, truncated } = normalizeAIResponse(raw);
 
-      const characterMessage = createMessage("model", text || "No recibi texto en la respuesta.");
+      const characterMessage = createMessage("model", text || "I did not receive any text in the response.");
       messages.push(characterMessage);
       saveHistory(character.id, messages);
       renderMessages();
 
       if (truncated) {
-        showError("La respuesta se corto por limite de tokens.");
+        showError("The response was cut off due to the token limit.");
       }
     } catch (error) {
       if (error.status === 429) {
-        showError("Se alcanzo el limite de peticiones a la IA. Espera unos segundos y volve a intentar.");
+        showError("The AI request limit was reached. Wait a few seconds and try again.");
       } else {
-        showError("No se pudo obtener respuesta de la IA. Intenta de nuevo.");
+        showError("Could not get a response from the AI. Please try again.");
       }
     } finally {
       setTyping(false);
