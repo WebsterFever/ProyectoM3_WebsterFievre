@@ -10,7 +10,7 @@ export function loadHistory(characterId) {
     const raw = localStorage.getItem(historyKey(characterId));
     return raw ? JSON.parse(raw) : [];
   } catch (error) {
-    console.error("No se pudo leer el historial guardado", error);
+    console.error("Could not read saved history", error);
     return [];
   }
 }
@@ -19,7 +19,7 @@ export function saveHistory(characterId, messages) {
   try {
     localStorage.setItem(historyKey(characterId), JSON.stringify(messages));
   } catch (error) {
-    console.error("No se pudo guardar el historial", error);
+    console.error("Could not save history", error);
   }
 }
 
