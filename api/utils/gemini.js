@@ -1,14 +1,14 @@
 /*
- * gemini.js — Adaptador entre el payload interno y Gemini
+ * gemini.js — Adapter between the internal payload and Gemini
  *
- * El frontend manda:
+ * The frontend sends:
  *   messages: [{ role: "user" | "assistant", content: string }]
  *
- * Gemini espera:
+ * Gemini expects:
  *   contents: [{ role: "user" | "model", parts: [{ text }] }]
  *
- * El system prompt no va dentro de contents[]: se manda aparte como
- * systemInstruction al crear el modelo (ver api/chat.js).
+ * The system prompt does not go inside contents[]: it is sent separately as
+ * systemInstruction when creating the model (see api/chat.js).
  */
 export function toGeminiContents(messages) {
   return messages
