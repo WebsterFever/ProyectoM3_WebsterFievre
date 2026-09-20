@@ -1,9 +1,9 @@
 /*
- * response.js — Shape de respuesta compatible con src/engine/normalizer.js
+ * response.js — Response shape compatible with src/engine/normalizer.js
  *
- * Sin importar que proveedor de IA responda por detras, siempre devolvemos
- * este mismo shape para que el frontend no tenga que cambiar si el dia de
- * mañana se cambia Gemini por otro proveedor.
+ * Regardless of which AI provider responds behind the scenes, we always return
+ * the same shape so the frontend does not need to change if, in the future,
+ * Gemini is replaced by another provider.
  */
 export function createChatResponse({ text, payload }) {
   return {
