@@ -9,17 +9,17 @@ export function renderHome(container) {
 
   container.innerHTML = `
     <section class="hero">
-      <h1>Chatea con tu personaje favorito</h1>
-      <p>Elegi un personaje de la galeria y empeza una conversacion impulsada por inteligencia artificial (Google Gemini).</p>
+      <h1>Chat with Your Favorite Character</h1>
+      <p>Choose a character from the gallery and start an AI-powered conversation using Google Gemini.</p>
     </section>
 
-    <section class="gallery" aria-label="Galeria de personajes">
+    <section class="gallery" aria-label="Character gallery">
       ${CHARACTERS.map((character) => characterCardHTML(character, character.id === current.id)).join("")}
     </section>
 
     <section class="hero-cta">
-      <p>Vas a chatear con <strong>${escapeHTML(current.name)}</strong>.</p>
-      <button id="start-chat-btn" class="btn-primary" type="button">Empezar a chatear</button>
+      <p>You are going to chat with <strong>${escapeHTML(current.name)}</strong>.</p>
+      <button id="start-chat-btn" class="btn-primary" type="button">Start chatting</button>
     </section>
   `;
 
@@ -47,7 +47,7 @@ function characterCardHTML(character, isSelected) {
       <div class="character-avatar">${character.avatar}</div>
       <h3>${escapeHTML(character.name)}</h3>
       <p>${escapeHTML(character.tagline)}</p>
-      ${hasHistory(character.id) ? '<span class="history-badge">Historial guardado</span>' : ""}
+      ${hasHistory(character.id) ? '<span class="history-badge">Saved history</span>' : ""}
     </article>
   `;
 }
