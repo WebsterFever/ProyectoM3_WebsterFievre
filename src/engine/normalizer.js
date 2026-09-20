@@ -1,12 +1,12 @@
 /*
- * normalizer.js — Parseo robusto de la respuesta de /api/chat
+ * normalizer.js — Robust parsing of the /api/chat response
  *
- * El backend siempre devuelve el mismo shape sin importar el proveedor de
- * IA que use por detras (ver api/utils/response.js):
+ * The backend always returns the same shape regardless of the AI provider
+ * used behind the scenes (see api/utils/response.js):
  *   { content: [{ type: "text", text }], stop_reason, usage }
  *
- * La UI necesita un string seguro. Este modulo nunca rompe si llega un
- * shape inesperado.
+ * The UI needs a safe string. This module never breaks if it receives an
+ * unexpected shape.
  */
 export function normalizeAIResponse(raw) {
   const blocks = Array.isArray(raw?.content) ? raw.content : [];
