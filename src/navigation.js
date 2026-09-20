@@ -13,8 +13,8 @@ export function renderNavigation() {
   nav.innerHTML = `
     <a class="brand" href="/home" data-link data-path="/home">✨ PIM3 Chat</a>
     <div class="nav-right">
-      <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema" type="button">${themeIcon}</button>
-      <button id="nav-toggle" class="nav-toggle" aria-label="Abrir menu" aria-expanded="false" type="button">
+      <button id="theme-toggle" class="theme-toggle" aria-label="Change theme" type="button">${themeIcon}</button>
+      <button id="nav-toggle" class="nav-toggle" aria-label="Open menu" aria-expanded="false" type="button">
         <span></span><span></span><span></span>
       </button>
     </div>
