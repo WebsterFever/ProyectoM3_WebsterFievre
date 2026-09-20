@@ -4,16 +4,16 @@ import { escapeHTML } from "../utils.js";
 export function renderAbout(container) {
   container.innerHTML = `
     <section class="about-view">
-      <h1>Sobre el proyecto</h1>
+      <h1>About the project</h1>
       <p>
-        <strong>Chatea con tu personaje favorito</strong> es una Single Page Application
-        desarrollada como Proyecto Integrador 3. Permite mantener conversaciones con
-        personajes ficticios usando Google Gemini AI, con un backend seguro implementado
-        mediante Vercel Serverless Functions para que la API key nunca quede expuesta en
-        el navegador.
+        <strong>Chat with Your Favorite Character</strong> is a Single Page Application
+        developed as Integrative Project 3. It lets users have conversations with
+        fictional characters using Google Gemini AI, with a secure backend implemented
+        through Vercel Serverless Functions so the API key is never exposed in the
+        browser.
       </p>
 
-      <h2>Personajes disponibles</h2>
+      <h2>Available characters</h2>
       <ul class="about-character-list">
         ${CHARACTERS.map(
           (c) => `
@@ -28,20 +28,20 @@ export function renderAbout(container) {
         ).join("")}
       </ul>
 
-      <h2>Tecnologias utilizadas</h2>
+      <h2>Technologies used</h2>
       <ul>
-        <li>HTML, CSS y JavaScript vanilla (ES Modules)</li>
-        <li>Routing SPA con History API</li>
+        <li>HTML, CSS, and vanilla JavaScript (ES Modules)</li>
+        <li>SPA routing with the History API</li>
         <li>Google Gemini AI (via @google/generative-ai)</li>
         <li>Vercel Serverless Functions</li>
-        <li>Vitest para tests unitarios</li>
-        <li>localStorage para persistir el historial de conversacion</li>
+        <li>Vitest for unit tests</li>
+        <li>localStorage to persist conversation history</li>
       </ul>
 
-      <h2>Notas</h2>
+      <h2>Notes</h2>
       <p>
-        El historial de cada personaje se guarda en el navegador. Podes borrarlo en
-        cualquier momento desde la vista de Chat.
+        Each character's conversation history is stored in the browser. You can delete it
+        at any time from the Chat view.
       </p>
     </section>
   `;
