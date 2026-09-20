@@ -6,37 +6,37 @@ import { renderAbout } from "../src/views/about.js";
 import { renderNotFound } from "../src/views/notFound.js";
 
 describe("resolveView", () => {
-  it("resuelve /home a renderHome", () => {
+  it("resolves /home to renderHome", () => {
     expect(resolveView("/home")).toBe(renderHome);
   });
 
-  it("resuelve /chat a renderChat", () => {
+  it("resolves /chat to renderChat", () => {
     expect(resolveView("/chat")).toBe(renderChat);
   });
 
-  it("resuelve /about a renderAbout", () => {
+  it("resolves /about to renderAbout", () => {
     expect(resolveView("/about")).toBe(renderAbout);
   });
 
-  it("resuelve una ruta desconocida a renderNotFound", () => {
+  it("resolves an unknown route to renderNotFound", () => {
     expect(resolveView("/ruta-inexistente")).toBe(renderNotFound);
   });
 
-  it("resuelve /chat/ (con slash final) a renderChat", () => {
+  it("resolves /chat/ (with a trailing slash) to renderChat", () => {
     expect(resolveView("/chat/")).toBe(renderChat);
   });
 });
 
 describe("normalizePath", () => {
-  it("quita el slash final de rutas con mas de un caracter", () => {
+  it("removes the trailing slash from routes longer than one character", () => {
     expect(normalizePath("/chat/")).toBe("/chat");
   });
 
-  it("deja intacta la raiz '/'", () => {
+  it("leaves the root '/' unchanged", () => {
     expect(normalizePath("/")).toBe("/");
   });
 
-  it("deja intacta una ruta sin slash final", () => {
+  it("leaves a route without a trailing slash unchanged", () => {
     expect(normalizePath("/about")).toBe("/about");
   });
 });
